@@ -36,18 +36,10 @@ if (app.Environment.IsDevelopment())
     }
     app.MapOpenApi();
     app.MapScalarApiReference();
-    //Configure by default to open scalar api reference
-
 }
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapGet("/", () =>
@@ -57,8 +49,6 @@ if (app.Environment.IsDevelopment())
 app.MapPost("/candidate",
     async (ICandidateService candidateService,[FromBody] CreateOrUpdateCandidateRequestInput requestInput) =>
     {
-        //add modal validation
-
         var result = await candidateService.CreateOrUpdate(requestInput);
         if (result.IsUpdate)
         {
@@ -68,23 +58,5 @@ app.MapPost("/candidate",
 
     }).AddFluentValidationFilter();
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
-
 app.Run();
 
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
