@@ -1,4 +1,7 @@
 using JobCandidateHubAPI;
+using JobCandidateHubAPI.Dtos.Candidates;
+using JobCandidateHubAPI.Implementations;
+using JobCandidateHubAPI.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -12,6 +15,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddDbContext<JobCandidateDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddScoped<ICandidateService, CandidateService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -42,9 +46,20 @@ var summaries = new[]
 if (app.Environment.IsDevelopment())
 {
     app.MapGet("/", () =>
-        Results.Redirect("/scalar")) .ExcludeFromDescription();
+        Results.Redirect("/scalar")).ExcludeFromDescription();
 }
 
+app.MapPost("/candidate",
+    async (ICandidateService candidateService, CreateOrUpdateCandidateRequestInput requestInput) =>
+    {
+        var result = await candidateService.CreateOrUpdate(requestInput);
+        if (result.IsUpdate)
+        {
+            return Results.Ok();
+        }
+        return Results.Created();
+
+    });
 
 app.MapGet("/weatherforecast", () =>
 {

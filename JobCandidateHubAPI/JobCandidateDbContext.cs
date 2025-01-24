@@ -10,8 +10,10 @@ namespace JobCandidateHubAPI
             modelBuilder.Entity<Entities.Candidate>(entity =>
             {
                 entity.HasKey(e => e.Email);
-                //add other fluent api configurations as needed 
-
+                entity.Property(e => e.FirstName).IsRequired();
+                entity.Property(e => e.LastName).IsRequired();
+                entity.Property(e => e.Comments).IsRequired();
+                //add more configurations here
             });
         }
     }
