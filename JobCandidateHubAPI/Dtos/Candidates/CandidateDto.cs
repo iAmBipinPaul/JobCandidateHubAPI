@@ -1,6 +1,6 @@
-﻿namespace JobCandidateHubAPI.Entities
+﻿namespace JobCandidateHubAPI.Dtos.Candidates
 {
-    public class Candidate
+    public class CandidateDto
     {
         public string Email { get; set; } = null!;
         public string FirstName { get; set; } = null!;

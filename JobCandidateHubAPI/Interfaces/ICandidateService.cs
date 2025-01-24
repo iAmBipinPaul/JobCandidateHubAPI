@@ -5,5 +5,6 @@ namespace JobCandidateHubAPI.Interfaces
     public interface ICandidateService
     {
         Task<CreateOrUpdateResult> CreateOrUpdate(CreateOrUpdateCandidateRequestInput requestInput);
+        Task<List<CandidateDto>> GetCandidates();
     }
 }

@@ -58,5 +58,7 @@ app.MapPost("/candidate",
 
     }).AddFluentValidationFilter();
 
+
+app.MapGet("/candidates", async (ICandidateService candidateService) =>await candidateService.GetCandidates());
 app.Run();
 

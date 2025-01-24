@@ -1,9 +1,10 @@
 ﻿using JobCandidateHubAPI.Dtos.Candidates;
 using JobCandidateHubAPI.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace JobCandidateHubAPI.Implementations
 {
-    public class CandidateService(JobCandidateDbContext dbContext,ILogger<CandidateService> logger):ICandidateService
+    public class CandidateService(JobCandidateDbContext dbContext, ILogger<CandidateService> logger) : ICandidateService
     {
         public async Task<CreateOrUpdateResult> CreateOrUpdate(CreateOrUpdateCandidateRequestInput requestInput)
         {
@@ -16,12 +17,13 @@ namespace JobCandidateHubAPI.Implementations
                     Email = requestInput.Email,
                     FirstName = requestInput.FirstName,
                     LastName = requestInput.LastName,
-                    PhoneNumber = requestInput.PhoneNumber, 
+                    PhoneNumber = requestInput.PhoneNumber,
                     IntervalStateTime = requestInput.IntervalStateTime,
                     IntervalEndTime = requestInput.IntervalEndTime,
                     LinkedInProfileUrl = requestInput.LinkedInProfileUrl,
                     GitHubProfileUrl = requestInput.GitHubProfileUrl,
-                    Comments = requestInput.Comments
+                    Comments = requestInput.Comments,
+                    LastUpdateDateTime = DateTime.UtcNow
                 };
                 dbContext.Candidates.Add(candidate);
                 await dbContext.SaveChangesAsync();
@@ -66,6 +68,8 @@ namespace JobCandidateHubAPI.Implementations
                 {
                     candidate.Comments = requestInput.Comments;
                 }
+
+                candidate.LastUpdateDateTime = DateTime.UtcNow;
                 await dbContext.SaveChangesAsync();
                 logger.LogInformation("Candidate updated with email {email}", requestInput.Email);
                 return new CreateOrUpdateResult()
@@ -73,6 +77,25 @@ namespace JobCandidateHubAPI.Implementations
                     IsUpdate = true
                 };
             }
+        }
+
+        public async Task<List<CandidateDto>> GetCandidates()
+        {
+            //This is just for testing purpose , to make sure it actually adds data
+            var res = await dbContext.Candidates.Select(c => new CandidateDto()
+            {
+                Email = c.Email,
+                FirstName = c.FirstName,
+                LastName = c.LastName,
+                PhoneNumber = c.PhoneNumber,
+                IntervalStateTime = c.IntervalStateTime,
+                IntervalEndTime = c.IntervalEndTime,
+                LinkedInProfileUrl = c.LinkedInProfileUrl,
+                GitHubProfileUrl = c.GitHubProfileUrl,
+                Comments = c.Comments,
+                LastUpdateDateTime = c.LastUpdateDateTime
+            }).OrderByDescending(c => c.LastUpdateDateTime).Skip(0).Take(10).ToListAsync();
+            return res;
         }
     }
 }
