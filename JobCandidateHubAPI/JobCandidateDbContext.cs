@@ -4,7 +4,7 @@ namespace JobCandidateHubAPI
 {
     public class JobCandidateDbContext(DbContextOptions<JobCandidateDbContext> options) : DbContext(options)
     {
-        public DbSet<Entities.Candidate> Candidates { get; set; } = null!;
+        public virtual DbSet<Entities.Candidate> Candidates { get; set; } = null!;
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Entities.Candidate>(entity =>
