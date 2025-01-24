@@ -1,5 +1,6 @@
 using JobCandidateHubAPI;
 using Microsoft.EntityFrameworkCore;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,9 @@ if (app.Environment.IsDevelopment())
         context.Database.Migrate();
     }
     app.MapOpenApi();
+    app.MapScalarApiReference();
+    //Configure by default to open scalar api reference
+
 }
 
 app.UseHttpsRedirection();
@@ -33,6 +37,14 @@ var summaries = new[]
 {
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.MapGet("/", () =>
+        Results.Redirect("/scalar")) .ExcludeFromDescription();
+}
+
 
 app.MapGet("/weatherforecast", () =>
 {
