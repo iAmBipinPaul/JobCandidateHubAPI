@@ -1,6 +1,21 @@
 @JobCandidateHubAPI_HostAddress = http://localhost:5149
 
-GET {{JobCandidateHubAPI_HostAddress}}/weatherforecast/
+GET {{JobCandidateHubAPI_HostAddress}}/candidates/
 Accept: application/json
 
 ###
+
+POST {{JobCandidateHubAPI_HostAddress}}/candidates
+Accept: application/json
+Content-Type: application/json
+{
+  "email": "mail11@mail.com",
+  "firstName": "Bipin",
+  "lastName": "asdfasdf",
+  "phoneNumber": null,
+  "intervalStateTime": null,
+  "intervalEndTime": null,
+  "linkedInProfileUrl": null,
+  "gitHubProfileUrl": null,
+  "comments": "asdfasdfsdf"
+}

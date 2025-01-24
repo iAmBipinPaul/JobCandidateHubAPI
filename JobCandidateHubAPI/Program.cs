@@ -46,7 +46,7 @@ if (app.Environment.IsDevelopment())
         Results.Redirect("/scalar")).ExcludeFromDescription();
 }
 
-app.MapPost("/candidate",
+app.MapPost("/candidates",
     async (ICandidateService candidateService,[FromBody] CreateOrUpdateCandidateRequestInput requestInput) =>
     {
         var result = await candidateService.CreateOrUpdate(requestInput);
