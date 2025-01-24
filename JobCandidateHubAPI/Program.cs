@@ -2,9 +2,10 @@ using JobCandidateHubAPI;
 using JobCandidateHubAPI.Dtos.Candidates;
 using JobCandidateHubAPI.Implementations;
 using JobCandidateHubAPI.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
-
+using FluentValidation;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -16,6 +17,10 @@ builder.Services.AddDbContext<JobCandidateDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<ICandidateService, CandidateService>();
+
+builder.AddFluentValidationEndpointFilter();
+builder.Services.AddValidatorsFromAssemblyContaining<CandidateValidator>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -50,8 +55,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapPost("/candidate",
-    async (ICandidateService candidateService, CreateOrUpdateCandidateRequestInput requestInput) =>
+    async (ICandidateService candidateService,[FromBody] CreateOrUpdateCandidateRequestInput requestInput) =>
     {
+        //add modal validation
+
         var result = await candidateService.CreateOrUpdate(requestInput);
         if (result.IsUpdate)
         {
@@ -59,7 +66,7 @@ app.MapPost("/candidate",
         }
         return Results.Created();
 
-    });
+    }).AddFluentValidationFilter();
 
 app.MapGet("/weatherforecast", () =>
 {

@@ -70,7 +70,7 @@ namespace JobCandidateHubAPI.Implementations
                 logger.LogInformation("Candidate updated with email {email}", requestInput.Email);
                 return new CreateOrUpdateResult()
                 {
-                    IsUpdate = false
+                    IsUpdate = true
                 };
             }
         }
